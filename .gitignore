@@ -1,0 +1,23 @@
+# Flutter build outputs
+app/build/
+app/.dart_tool/
+app/.flutter-plugins*
+app/.packages
+app/pubspec.lock
+app/android/
+app/ios/
+app/linux/
+app/macos/
+app/web/
+app/windows/
+app/.idea/
+*.iml
+
+# PHP runtime data (قاعدة البيانات والرفعات تعمل على السيرفر)
+php/data/*.db
+php/data/*.db-journal
+php/data/uploads/
+
+# نظام
+.DS_Store
+Thumbs.db

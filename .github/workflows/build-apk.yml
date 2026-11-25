@@ -1,0 +1,117 @@
+# بناء APK تلقائيًا عبر GitHub Actions — لا يحتاج Flutter SDK على جهازك.
+# يعمل عند كل push إلى main، ويمكن تشغيله يدويًا من تبويب Actions.
+# الناتج: blue-vip.apk في صفحة Releases مع كل بناء.
+name: Build BlueVIP APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: جلب الكود
+        uses: actions/checkout@v4
+
+      - name: تثبيت Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: تثبيت Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.24.5"
+          cache: true
+
+      # مجلد android غير مخزّن في الـ repo — يُولَّد هنا في كل بناء
+      - name: توليد مجلد الأندرويد
+        working-directory: app
+        run: flutter create . --platforms android --org com.bluevip
+
+      # ضبط applicationId على com.bluevip.app + minSdk 21 (المشغل يحتاج 21+)
+      - name: ضبط applicationId و minSdk
+        working-directory: app
+        run: |
+          python3 - <<'PY'
+          import re
+          app_bg = "android/app/build.gradle"
+          a_txt = open(app_bg, encoding="utf-8").read()
+          a_txt = re.sub(r'applicationId\s*=?\s*["\'][^"\']+["\']', 'applicationId = "com.bluevip.app"', a_txt)
+          a_txt = re.sub(r'minSdk(?:Version)?\s*=?\s*(?:flutter\.minSdkVersion|\d+)', 'minSdk = 21', a_txt)
+          if "minSdk" not in a_txt:
+              a_txt = a_txt.replace("defaultConfig {", "defaultConfig {\n        minSdk = 21", 1)
+          open(app_bg, "w", encoding="utf-8").write(a_txt)
+          print("applicationId/minSdk configured!")
+          PY
+
+      # صلاحيات التشغيل والشبكة + النص الواضح (روابط البث HTTP)
+      - name: ضبط الـ AndroidManifest
+        working-directory: app
+        run: |
+          python3 - <<'PY'
+          p = "android/app/src/main/AndroidManifest.xml"
+          s = open(p, encoding="utf-8").read()
+          perms = {
+              "android.permission.INTERNET": '<uses-permission android:name="android.permission.INTERNET"/>\n    ',
+              "android.permission.ACCESS_NETWORK_STATE": '<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>\n    ',
+              "android.permission.WAKE_LOCK": '<uses-permission android:name="android.permission.WAKE_LOCK"/>\n    ',
+          }
+          for perm, tag in perms.items():
+              if perm not in s:
+                  s = s.replace("<application", tag + "<application", 1)
+          if "usesCleartextTraffic" not in s:
+              s = s.replace(
+                  "<application",
+                  '<application\n        android:usesCleartextTraffic="true"',
+                  1,
+              )
+          open(p, "w", encoding="utf-8").write(s)
+          print("manifest configured!")
+          PY
+
+      - name: جلب الحزم
+        working-directory: app
+        run: flutter pub get
+
+      # فحص صيغة الكود (يمنع كسر البناء بأخطاء syntax فقط — التنسيق التجميلي لا يفشل)
+      - name: فحص صيغة الكود
+        working-directory: app
+        run: dart format --output=none lib/
+
+      - name: بناء APK
+        working-directory: app
+        run: flutter build apk --release --split-per-abi
+
+      - name: إعادة تسمية APK
+        run: |
+          mkdir -p dist
+          cp app/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk dist/blue-vip.apk
+          cp app/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk dist/blue-vip-arm32.apk
+
+      # نشر تلقائي في Releases عند كل بناء ناجح مع tag آلي
+      - name: نشر الإصدار
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: BlueVIP — بناء #${{ github.run_number }}
+          body: |
+            بناء آلي جديد لتطبيق **Blue VIP** من فرع main.
+
+            - `blue-vip.apk` — معالجات 64-bit (موصى به)
+            - `blue-vip-arm32.apk` — معالجات 32-bit القديمة
+
+            > بعد التثبيت: أدخل كود تفعيل VIP من لوحة الإدارة أو تصفح المحتوى المجاني.
+          files: |
+            dist/blue-vip.apk
+            dist/blue-vip-arm32.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

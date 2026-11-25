@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "source": "BLUE_VIP_OFFICIAL_API",
+  "updated_at": "2026-11-25T00:00:00Z",
+  "categories": [
+    { "id": "bv_sport", "name": "القنوات الرياضية", "icon": "sports" },
+    { "id": "bv_bein", "name": "باقة beIN SPORTS", "icon": "star" },
+    { "id": "bv_iraq", "name": "القنوات العراقية", "icon": "flag" },
+    { "id": "bv_arabic", "name": "القنوات العربية", "icon": "language" },
+    { "id": "bv_news", "name": "قنوات الأخبار", "icon": "news" },
+    { "id": "bv_kids", "name": "أطفال وكرتون", "icon": "child_care" },
+    { "id": "bv_doc", "name": "قنوات وثائقية", "icon": "public" }
+  ],
+  "channels": [
+    {
+      "id": "bv_bein1", "name": "beIN SPORTS 1 HD", "category_id": "bv_bein",
+      "logo": "", "url": "", "backup_url": "",
+      "servers": [
+        { "name": "سيرفر 1 (HD)", "url": "", "quality": "HD" }
+      ]
+    },
+    {
+      "id": "bv_bein2", "name": "beIN SPORTS 2 HD", "category_id": "bv_bein",
+      "logo": "", "url": "", "backup_url": "",
+      "servers": [ { "name": "سيرفر 1 (HD)", "url": "", "quality": "HD" } ]
+    },
+    {
+      "id": "bv_iraq1", "name": "العراقية الرياضية", "category_id": "bv_iraq",
+      "logo": "", "url": "", "backup_url": "",
+      "servers": [ { "name": "سيرفر 1 (SD)", "url": "", "quality": "SD" } ]
+    },
+    {
+      "id": "bv_sport1", "name": "الرياضية العالمية", "category_id": "bv_sport",
+      "logo": "", "url": "", "backup_url": "",
+      "servers": [ { "name": "سيرفر 1 (HD)", "url": "", "quality": "HD" } ]
+    },
+    {
+      "id": "bv_news1", "name": "العراقية الإخبارية", "category_id": "bv_news",
+      "logo": "", "url": "", "backup_url": "",
+      "servers": [ { "name": "سيرفر 1 (SD)", "url": "", "quality": "SD" } ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+name: blue_vip
+description: Blue VIP — تطبيق البث المباشر والأفلام والمسلسلات والمباريات.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  # طلبات الـ API (كتالوج + مباريات + تفعيل)
+  http: ^1.2.0
+  # مشغل الفيديو المبني على ExoPlayer (يدعم HLS/M3U8 والروابط المباشرة)
+  video_player: ^2.9.1
+  # حفظ المفضلة والتفعيل والجلسة محليًا
+  shared_preferences: ^2.2.2
+  # فتح قناة التلغرام خارجياً
+  url_launcher: ^6.1.14
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/brand/
+    - assets/data/
