@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../services/activation_service.dart';
+import '../services/api_service.dart';
 import '../theme/app_theme.dart';
+
+/// بوابة المشاهدة: إن كان الإجبار مفعلاً والجهاز غير مفعّل →
+/// فتح شاشة التفعيل وإيقاف التشغيل. تعرف على كل الشاشات.
+bool gateOrOpenActivation(BuildContext context) {
+  if (ActivationService.instance.canWatch) return true;
+  Navigator.of(context).push(
+    MaterialPageRoute(builder: (_) => const ActivationScreen()),
+  );
+  return false;
+}
 
 /// شاشة تفعيل VIP: إدخال كود الاشتراك وربطه بمعرف الجهاز.
 /// نفس نظام تطبيقات VIP: كود واحد = جهاز واحد بمدة محددة.

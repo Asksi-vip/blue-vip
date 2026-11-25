@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/models.dart';
 import 'api_service.dart';
 
 /// خدمة تفعيل VIP: معرف جهاز ثابت + حالة الاشتراك + الكاش.

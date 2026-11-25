@@ -1,22 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../models/models.dart';
-import '../services/activation_service.dart';
 import '../services/api_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/widgets.dart';
 import 'activation_screen.dart';
 import 'player_screen.dart';
-
-/// بوابة المشاهدة: إن كان الإجبار مفعلاً والجهاز غير مفعّل →
-/// فتح شاشة التفعيل وإيقاف التشغيل.
-bool gateOrOpenActivation(BuildContext context) {
-  if (ActivationService.instance.canWatch) return true;
-  Navigator.of(context).push(
-    MaterialPageRoute(builder: (_) => const ActivationScreen()),
-  );
-  return false;
-}
 
 /// شاشة البث المباشر — نفس بنية كتالوج IraqMax:
 /// بحث علوي + شرائح أقسام أفقية + شبكة قنوات متجاوبة + حالات تحميل/فشل.

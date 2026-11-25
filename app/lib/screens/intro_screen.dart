@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
 
+import '../models/models.dart';
 import '../services/api_service.dart';
 import '../theme/app_theme.dart';
 import 'main_shell.dart';
@@ -8,9 +9,7 @@ import 'main_shell.dart';
 /// شاشة الترحيب مثل نظام IraqMax: شعار + "مرحباً بك في Blue VIP"
 /// + التاغلاين + زر "دخول التطبيق والاستمتاع" + زر قناة التلغرام الرسمية.
 class IntroScreen extends StatelessWidget {
-  const IntroScreen({super.key, required this.onConfigReady});
-
-  final void Function(BvAppConfig) onConfigReady;
+  const IntroScreen({super.key});
 
   Future<void> _openTelegram(String url) async {
     final Uri uri = Uri.parse(url);

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../config.dart';
 import '../models/models.dart';
@@ -97,8 +98,9 @@ class ApiService {
 
   Future<Map<String, dynamic>?> _cachedCatalog() async {
     try {
-      // الكاش يُخزن في SharedPreferences عبر ActivationService.cache
-      final String? raw = await prefsGetString('bv_catalog_cache');
+      // الكاش يُخزن محلياً في SharedPreferences
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String? raw = prefs.getString('bv_catalog_cache');
       if (raw == null || raw.isEmpty) return null;
       final dynamic j = jsonDecode(raw);
       return j is Map<String, dynamic> ? j : null;
@@ -111,10 +113,11 @@ class ApiService {
     List<Map<String, dynamic>> cats,
     List<Map<String, dynamic>> chs,
   ) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String payload = jsonEncode(
       <String, dynamic>{'categories': cats, 'channels': chs},
     );
-    await prefsSetString('bv_catalog_cache', payload);
+    await prefs.setString('bv_catalog_cache', payload);
   }
 
   /// الكتالوج المدمج داخل الـ APK (assets/data/catalog.json).
@@ -220,11 +223,3 @@ class ActivationResult {
   final bool ok;
   final String message;
 }
-
-/// تجريد بسيط لـ SharedPreferences لتفادي تمرير الحزمة داخل الخدمة.
-/// (الخدمات تستخدم ActivationService.storage فعلياً)
-Future<String?> prefsGetString(String key) =>
-    ActivationService.storage.getString(key);
-
-Future<void> prefsSetString(String key, String value) =>
-    ActivationService.storage.setString(key);

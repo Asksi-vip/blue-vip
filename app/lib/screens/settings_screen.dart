@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../models/models.dart';
 import '../services/api_service.dart';
 import '../services/activation_service.dart';
 import '../theme/app_theme.dart';
